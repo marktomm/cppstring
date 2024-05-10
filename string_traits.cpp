@@ -80,7 +80,47 @@ operator<<(std::basic_ostream<Char, Traits> &os,
 // all ok if this compiles
 void stdout_lstring() { std::cout << lstring("Hello") << '\n'; }
 
+template <class Char> struct wspchar_traits : public std::char_traits<Char> {
+  static bool eq(Char c, Char d) { return std::char_traits<Char>::eq(c, d); }
+
+  static bool lt(Char c, Char d) { return std::char_traits<Char>::lt(c, d); }
+
+  static std::size_t length(Char const *p) {
+    for (; *p == ' '; p++)
+      ;
+    for (std::size_t i = 0;; p++, i++) {
+      if (eq(*p, Char())) {
+        return i;
+      }
+    }
+  }
+
+  static int compare(Char const *p, Char const *q, std::size_t n) {
+    std::size_t pn = n;
+    std::size_t qn = n;
+    for (; *p == ' '; p++, pn--)
+      ;
+    for (; *q == ' '; q++, qn--)
+      ;
+
+    return 0;
+  }
+};
+
+template <class Char>
+using wspbasic_string = std::basic_string<Char, wspchar_traits<Char>>;
+
+using wspstring = wspbasic_string<char>;
+using wspwstring = wspbasic_string<wchar_t>;
+
+int test_wspstring() {
+  wspstring str1{"  Hello"};
+  wspstring str2{"Hello"};
+  return str1 == str2 ? 0 : 1;
+}
+
 int main() {
   using namespace std;
-  return test_lstring() || test_istring();
+
+  return test_lstring() || test_istring() || test_wspstring();
 }
