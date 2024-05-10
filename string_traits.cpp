@@ -30,6 +30,16 @@ bool test_lstring() {
   return str1 == str2 ? 0 : 1;
 }
 
+template <class Char, class Traits, class Char2>
+std::basic_ostream<Char, Traits> &
+operator<<(std::basic_ostream<Char, Traits> &os,
+           lbasic_string<Char2> const &str) {
+  return os.write(str.data(), str.size());
+}
+
+// all ok if this compiles
+void stdout_lstring() { std::cout << lstring("Hello") << '\n'; }
+
 int main() {
   using namespace std;
   return test_lstring();
