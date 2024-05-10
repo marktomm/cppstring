@@ -17,15 +17,55 @@ template <class Char> struct lchar_traits : public std::char_traits<Char> {
   }
 };
 
+template <class Char> struct ichar_traits : public std::char_traits<Char> {
+  static bool eq(Char c, Char d) { return std::toupper(c) == std::toupper(d); }
+
+  static bool lt(Char c, Char d) { return std::toupper(c) < std::toupper(d); }
+
+  static int compare(Char const *p, Char const *q, std::size_t n) {
+    for (std::size_t i = 0; i < n; i++) {
+      if (lt(p[i], q[i])) {
+        return -1;
+      } else if (lt(q[i], p[i])) {
+        return 1;
+      }
+    }
+    return 0;
+  }
+
+  static typename std::char_traits<Char>::char_type const *
+  find(Char const *p, std::size_t n, Char c) {
+    for (; n-- != 0; ++p) {
+      if (!eq(c, *p)) {
+        return p;
+      }
+    }
+    return 0;
+  }
+};
+
 template <class Char>
 using lbasic_string = std::basic_string<Char, lchar_traits<Char>>;
 
 using lstring = lbasic_string<char>;
 using lwstring = lbasic_string<wchar_t>;
 
-bool test_lstring() {
+template <class Char>
+using ibasic_string = std::basic_string<Char, ichar_traits<Char>>;
+
+using istring = ibasic_string<char>;
+using iwstring = ibasic_string<wchar_t>;
+
+int test_lstring() {
   lstring str1{"Hello"};
   lstring str2{"HeLLO"};
+
+  return str1 == str2 ? 0 : 1;
+}
+
+int test_istring() {
+  istring str1{"Hello"};
+  istring str2{"HeLLo"};
 
   return str1 == str2 ? 0 : 1;
 }
@@ -42,5 +82,5 @@ void stdout_lstring() { std::cout << lstring("Hello") << '\n'; }
 
 int main() {
   using namespace std;
-  return test_lstring();
+  return test_lstring() || test_istring();
 }
