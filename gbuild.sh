@@ -4,4 +4,4 @@ set -xe
 
 [ ! -d build ] && mkdir build
 
-g++ -g string_traits.cpp -o build/string_traits && gdb -x gdb_commands.txt --args build/string_traits
+g++ -g string.cpp -o build/string && gdb -x gdb_commands.txt --args build/string

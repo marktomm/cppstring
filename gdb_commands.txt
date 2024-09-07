@@ -1,6 +1,4 @@
-b string_traits.cpp:84
-b string_traits.cpp:86
-b string_traits.cpp:89
+b string.cpp:90
 r
 i lo
 i ar
